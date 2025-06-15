@@ -1,0 +1,13 @@
+
+<h2>Lista de Alumnos</h2>
+<form method='POST' action='/agregar_alumno'>
+  DNI: <input name='dni'><br>
+  Nombre: <input name='nombre'><br>
+  Comisión: <input name='comision'><br>
+  <input type='submit' value='Agregar'>
+</form>
+<ul>
+{% for alumno in alumnos %}
+  <li>{{ alumno[0] }} - {{ alumno[1] }} - {{ alumno[2] }}</li>
+{% endfor %}
+</ul>

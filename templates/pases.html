@@ -1,0 +1,7 @@
+
+<h2>Historial de Pases</h2>
+<ul>
+{% for pase in pases %}
+  <li>{{ pase[1] }}: {{ pase[2] }} → {{ pase[3] }} ({{ pase[4] }})</li>
+{% endfor %}
+</ul>
