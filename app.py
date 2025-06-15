@@ -1,22 +1,26 @@
 
-from flask import Flask, render_template, request, redirect, url_for
+# app.py
+from flask import Flask, render_template, request, redirect, url_for, send_file
 import sqlite3
+import pandas as pd
+import io
 
 app = Flask(__name__)
 
+# DB INIT
 def init_db():
     conn = sqlite3.connect('database.db')
     c = conn.cursor()
-    c.execute("""CREATE TABLE IF NOT EXISTS alumno (
+    c.execute('''CREATE TABLE IF NOT EXISTS alumno (
                     dni INTEGER PRIMARY KEY,
                     nombre TEXT NOT NULL,
-                    comision TEXT NOT NULL)""")
-    c.execute("""CREATE TABLE IF NOT EXISTS pase (
+                    comision TEXT NOT NULL)''')
+    c.execute('''CREATE TABLE IF NOT EXISTS pase (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     dni INTEGER,
                     comision_origen TEXT,
                     comision_destino TEXT,
-                    fecha TEXT)""")
+                    fecha TEXT)''')
     conn.commit()
     conn.close()
 
@@ -72,7 +76,32 @@ def realizar_pase():
     conn.close()
     return redirect(url_for('pases'))
 
-if __name__ == '__main__':
-    # Render necesita que uses host=0.0.0.0 y un puerto accesible desde afuera
-    app.run(debug=False, host='0.0.0.0', port=10000)
+@app.route('/descargar_excel')
+def descargar_excel():
+    conn = sqlite3.connect('database.db')
+    alumnos = conn.execute("SELECT dni, nombre, comision FROM alumno ORDER BY comision").fetchall()
+    conn.close()
 
+    df = pd.DataFrame(alumnos, columns=["DNI", "Nombre", "Comisión"])
+
+    output = io.BytesIO()
+    with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+        df.to_excel(writer, index=False, sheet_name='Alumnos')
+
+    output.seek(0)
+    return send_file(
+        output,
+        as_attachment=True,
+        download_name='alumnos_por_comision.xlsx',
+        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+
+@app.route('/vista_excel')
+def vista_excel():
+    conn = sqlite3.connect('database.db')
+    alumnos = conn.execute("SELECT dni, nombre, comision FROM alumno ORDER BY comision").fetchall()
+    conn.close()
+    return render_template('vista_excel.html', alumnos=alumnos)
+
+if __name__ == '__main__':
+    app.run(debug=False, host='0.0.0.0', port=10000)
