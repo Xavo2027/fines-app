@@ -103,5 +103,21 @@ def vista_excel():
     conn.close()
     return render_template('vista_excel.html', alumnos=alumnos)
 
+@app.route('/debug_db')
+def debug_db():
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT COUNT(*) FROM alumno")
+        total = cur.fetchone()[0]
+        conn.close()
+        return f"✔ Conexión OK. Alumnos en la base: {total}"
+    except Exception as e:
+        return f"❌ Error de conexión: {e}"
+
+
+
+
+
 if __name__ == '__main__':
     app.run(debug=False, host='0.0.0.0', port=10000)
