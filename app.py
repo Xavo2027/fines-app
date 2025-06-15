@@ -73,4 +73,6 @@ def realizar_pase():
     return redirect(url_for('pases'))
 
 if __name__ == '__main__':
-    app.run(debug=False, host='0.0.0.0')
+    # Render necesita que uses host=0.0.0.0 y un puerto accesible desde afuera
+    app.run(debug=False, host='0.0.0.0', port=10000)
+
