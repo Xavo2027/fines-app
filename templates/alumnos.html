@@ -1,13 +1,24 @@
 
-<h2>Lista de Alumnos</h2>
-<form method='POST' action='/agregar_alumno'>
-  DNI: <input name='dni'><br>
-  Nombre: <input name='nombre'><br>
-  Comisión: <input name='comision'><br>
-  <input type='submit' value='Agregar'>
-</form>
-<ul>
-{% for alumno in alumnos %}
-  <li>{{ alumno[0] }} - {{ alumno[1] }} - {{ alumno[2] }}</li>
-{% endfor %}
-</ul>
+{% extends "base.html" %}
+{% block content %}
+  <h2 class="mb-3">Lista de Alumnos</h2>
+  <form method="POST" action="/agregar_alumno" class="row g-3 mb-4">
+    <div class="col-md-3">
+      <input type="text" name="dni" class="form-control" placeholder="DNI" required>
+    </div>
+    <div class="col-md-5">
+      <input type="text" name="nombre" class="form-control" placeholder="Nombre completo" required>
+    </div>
+    <div class="col-md-4">
+      <input type="text" name="comision" class="form-control" placeholder="Comisión" required>
+    </div>
+    <div class="col-12">
+      <button type="submit" class="btn btn-success">Agregar</button>
+    </div>
+  </form>
+  <ul class="list-group">
+    {% for alumno in alumnos %}
+    <li class="list-group-item">{{ alumno[0] }} - {{ alumno[1] }} - {{ alumno[2] }}</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

@@ -1,7 +1,10 @@
 
-<h2>Comisiones</h2>
-<ul>
-{% for comision in comisiones %}
-  <li>{{ comision[0] }}</li>
-{% endfor %}
-</ul>
+{% extends "base.html" %}
+{% block content %}
+  <h2 class="mb-3">Comisiones registradas</h2>
+  <ul class="list-group">
+    {% for comision in comisiones %}
+    <li class="list-group-item">{{ comision[0] }}</li>
+    {% endfor %}
+  </ul>
+{% endblock %}
