@@ -1,3 +1,4 @@
+
 from flask import Flask, render_template, request, redirect, url_for, send_file
 import psycopg2
 import pandas as pd
@@ -6,12 +7,14 @@ import os
 
 app = Flask(__name__)
 
+# Configuración de conexión a PostgreSQL desde variable de entorno
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
+# Función de conexión reutilizable
 def get_db_connection():
     return psycopg2.connect(DATABASE_URL)
 
-@app.before_first_request
+# Inicialización de la base de datos
 def init_db():
     conn = get_db_connection()
     c = conn.cursor()
@@ -130,4 +133,5 @@ def debug_db():
         return f"❌ Error de conexión: {e}"
 
 if __name__ == '__main__':
+    init_db()
     app.run(debug=False, host='0.0.0.0', port=10000)
