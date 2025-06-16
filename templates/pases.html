@@ -1,27 +1,42 @@
-
-{% extends "base.html" %}
-{% block content %}
-  <h2 class="mb-3">Historial de Pases</h2>
-  <form method="POST" action="/realizar_pase" class="row g-3 mb-4">
-    <div class="col-md-3">
-      <input type="text" name="dni" class="form-control" placeholder="DNI" required>
-    </div>
-    <div class="col-md-3">
-      <input type="text" name="comision_origen" class="form-control" placeholder="Comisión Origen" required>
-    </div>
-    <div class="col-md-3">
-      <input type="text" name="comision_destino" class="form-control" placeholder="Comisión Destino" required>
-    </div>
-    <div class="col-md-3">
-      <input type="date" name="fecha" class="form-control" required>
-    </div>
-    <div class="col-12">
-      <button type="submit" class="btn btn-warning">Registrar Pase</button>
-    </div>
-  </form>
-  <ul class="list-group">
-    {% for pase in pases %}
-    <li class="list-group-item">{{ pase[1] }}: {{ pase[2] }} → {{ pase[3] }} ({{ pase[4] }})</li>
-    {% endfor %}
-  </ul>
-{% endblock %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2487">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000}
+    span.s1 {font-kerning: none}
+  </style>
+</head>
+<body>
+<p class="p1"><span class="s1">{% extends "base.html" %}</span></p>
+<p class="p1"><span class="s1">{% block content %}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;h2 class="mb-3"&gt;Historial de Pases&lt;/h2&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;form method="POST" action="/realizar_pase" class="row g-3 mb-4"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="col-md-3"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;input type="text" name="dni" class="form-control" placeholder="DNI" required&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="col-md-3"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;input type="text" name="comision_origen" class="form-control" placeholder="Comisión Origen" required&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="col-md-3"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;input type="text" name="comision_destino" class="form-control" placeholder="Comisión Destino" required&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="col-md-3"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;input type="date" name="fecha" class="form-control" required&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="col-12"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;button type="submit" class="btn btn-warning"&gt;Registrar Pase&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;/form&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;ul class="list-group"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>{% for pase in pases %}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;li class="list-group-item"&gt;{{ pase[1] }}: {{ pase[2] }} → {{ pase[3] }} ({{ pase[4] }})&lt;/li&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>{% endfor %}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;/ul&gt;</span></p>
+<p class="p1"><span class="s1">{% endblock %}</span></p>
+</body>
+</html>
