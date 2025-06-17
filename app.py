@@ -95,7 +95,7 @@ def descargar_excel():
     output = io.BytesIO()
     writer = pd.ExcelWriter(output, engine='xlsxwriter')
     df.to_excel(writer, index=False, sheet_name='Alumnos')
-    writer.save()
+    writer.close()
     output.seek(0)
     return send_file(output, download_name="alumnos.xlsx", as_attachment=True)
 
@@ -110,4 +110,5 @@ def vista_excel():
 
 if __name__ == '__main__':
     init_db()
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
