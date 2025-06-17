@@ -15,11 +15,25 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
+
+          {% if rol in ['coordinador', 'analista', 'ceo'] %}
           <li class="nav-item"><a class="nav-link" href="/alumnos">Alumnos</a></li>
           <li class="nav-item"><a class="nav-link" href="/comisiones">Comisiones</a></li>
+          {% endif %}
+
+          {% if rol in ['analista', 'ceo'] %}
           <li class="nav-item"><a class="nav-link" href="/pases">Pases</a></li>
           <li class="nav-item"><a class="nav-link" href="/descargar_excel">Descargar Excel</a></li>
           <li class="nav-item"><a class="nav-link" href="/vista_excel">Vista Excel</a></li>
+          {% endif %}
+
+          {% if usuario %}
+          <li class="nav-item ms-3">
+            <span class="nav-link disabled">Usuario: {{ usuario }} ({{ rol }})</span>
+          </li>
+          <li class="nav-item"><a class="nav-link text-danger" href="/logout">Salir</a></li>
+          {% endif %}
+
         </ul>
       </div>
     </div>
