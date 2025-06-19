@@ -102,4 +102,5 @@ def ver_inscriptos():
     return render_template("inscriptos.html", inscriptos=inscriptos)
 
 if __name__ == "__main__":
-    app.run()
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
