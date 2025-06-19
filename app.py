@@ -101,6 +101,10 @@ def ver_inscriptos():
     conn.close()
     return render_template("inscriptos.html", inscriptos=inscriptos)
 
+@app.route("/")
+def index():
+    return "", 302, {"Location": "/alumnos"}
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
