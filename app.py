@@ -4,6 +4,7 @@ import psycopg2
 import os
 from psycopg2.extras import RealDictCursor
 from werkzeug.security import generate_password_hash, check_password_hash
+from functools import wraps
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
@@ -11,6 +12,21 @@ app.secret_key = os.urandom(24)
 def get_db_connection():
     conn = psycopg2.connect(os.getenv("DATABASE_URL"))
     return conn
+
+def requiere_rol(*roles):
+    def decorador(func):
+        @wraps(func)
+        def envoltura(*args, **kwargs):
+            if 'rol' not in session or session['rol'] not in roles:
+                return redirect(url_for('login'))
+            return func(*args, **kwargs)
+        return envoltura
+    return decorador
+
+@app.before_request
+def requerir_login():
+    if 'usuario' not in session and request.endpoint not in ('login', 'static'):
+        return redirect(url_for('login'))
 
 @app.route("/")
 def index():
@@ -28,7 +44,8 @@ def login():
         cur.close()
         conn.close()
         if usuario and check_password_hash(usuario[2], password):
-            session["dni"] = dni
+            session["usuario"] = dni
+            session["rol"] = usuario[3]
             return redirect("/alumnos")
         else:
             return render_template("login.html", error="Credenciales inválidas")
@@ -36,10 +53,11 @@ def login():
 
 @app.route("/logout")
 def logout():
-    session.pop("dni", None)
+    session.clear()
     return redirect("/login")
 
 @app.route("/nuevo_usuario", methods=["GET", "POST"])
+@requiere_rol('ceo')
 def nuevo_usuario():
     if request.method == "POST":
         dni = request.form["dni"]
@@ -53,9 +71,10 @@ def nuevo_usuario():
         cur.close()
         conn.close()
         return redirect("/login")
-    return render_template("nuevo_usuario.html")
+    return render_template("nuevo_usuario.html", usuario=session.get("usuario"), rol=session.get("rol"))
 
 @app.route("/alumnos", methods=["GET", "POST"])
+@requiere_rol('coordinador', 'analista', 'ceo')
 def inscripcion():
     if request.method == "POST":
         datos = (
@@ -121,10 +140,11 @@ def inscripcion():
         conn.commit()
         cur.close()
         conn.close()
-        return render_template("alumnos.html", mensaje="✅ Inscripción enviada con éxito.")
-    return render_template("alumnos.html")
+        return render_template("alumnos.html", mensaje="✅ Inscripción enviada con éxito.", usuario=session.get("usuario"), rol=session.get("rol"))
+    return render_template("alumnos.html", usuario=session.get("usuario"), rol=session.get("rol"))
 
 @app.route("/inscriptos")
+@requiere_rol('coordinador', 'analista', 'ceo')
 def ver_inscriptos():
     conn = get_db_connection()
     cur = conn.cursor()
@@ -132,43 +152,7 @@ def ver_inscriptos():
     inscriptos = cur.fetchall()
     cur.close()
     conn.close()
-    return render_template("inscriptos.html", inscriptos=inscriptos)
-
-@app.route("/comisiones")
-def comisiones():
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute("SELECT nombre FROM comisiones")
-    comisiones = cur.fetchall()
-    cur.close()
-    conn.close()
-    return render_template("comisiones.html", comisiones=comisiones)
-
-@app.route("/pases", methods=["GET", "POST"])
-def pases():
-    conn = get_db_connection()
-    cur = conn.cursor()
-    if request.method == "POST":
-        dni = request.form["dni"]
-        nueva_comision = request.form["nueva_comision"]
-        cur.execute("UPDATE alumnos SET comision = %s WHERE dni = %s", (nueva_comision, dni))
-        cur.execute("INSERT INTO pases (dni, nueva_comision) VALUES (%s, %s)", (dni, nueva_comision))
-        conn.commit()
-    cur.execute("SELECT * FROM pases")
-    pases = cur.fetchall()
-    cur.close()
-    conn.close()
-    return render_template("pases.html", pases=pases)
-
-@app.route("/vista_excel")
-def vista_excel():
-    conn = get_db_connection()
-    cur = conn.cursor(cursor_factory=RealDictCursor)
-    cur.execute("SELECT * FROM alumnos")
-    alumnos = cur.fetchall()
-    cur.close()
-    conn.close()
-    return render_template("vista_excel.html", alumnos=alumnos)
+    return render_template("inscriptos.html", inscriptos=inscriptos, usuario=session.get("usuario"), rol=session.get("rol"))
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
