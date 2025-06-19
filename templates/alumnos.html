@@ -1,24 +1,108 @@
 
 {% extends "base.html" %}
 {% block content %}
-  <h2 class="mb-3">Lista de Alumnos</h2>
-  <form method="POST" action="/agregar_alumno" class="row g-3 mb-4">
-    <div class="col-md-3">
-      <input type="text" name="dni" class="form-control" placeholder="DNI" required>
+<div class="container mb-5">
+  <h2 class="mb-4">Formulario de Inscripción FinEs</h2>
+  {% if mensaje %}
+    <div class="alert alert-success">{{ mensaje }}</div>
+  {% endif %}
+  <form method="POST" action="/alumnos" class="row g-3">
+
+    <div class="col-md-6">
+      <label class="form-label">Correo electrónico</label>
+      <input type="email" name="email" class="form-control" required>
     </div>
-    <div class="col-md-5">
-      <input type="text" name="nombre" class="form-control" placeholder="Nombre completo" required>
+    <div class="col-md-6">
+      <label class="form-label">DNI</label>
+      <input type="text" name="dni" class="form-control" required>
+    </div>
+    <div class="col-md-6">
+      <label class="form-label">Apellido (como figura en el DNI)</label>
+      <input type="text" name="apellido" class="form-control" required>
+    </div>
+    <div class="col-md-6">
+      <label class="form-label">Nombre completo</label>
+      <input type="text" name="nombre_completo" class="form-control" required>
+    </div>
+    <div class="col-md-6">
+      <label class="form-label">Celular</label>
+      <input type="text" name="celular" class="form-control" required>
+    </div>
+    <div class="col-md-6">
+      <label class="form-label">Celular alternativo</label>
+      <input type="text" name="celular_alternativo" class="form-control">
     </div>
     <div class="col-md-4">
-      <input type="text" name="comision" class="form-control" placeholder="Comisión" required>
+      <label class="form-label">Fecha de nacimiento</label>
+      <input type="text" name="fecha_nacimiento" class="form-control" placeholder="dd/mm/aaaa" required>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">¿Cursaste en la etapa anterior?</label>
+      <select class="form-select" name="curso_anterior" required>
+        <option value="">Seleccionar</option>
+        <option value="si">Sí</option>
+        <option value="no">No</option>
+      </select>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">Turno preferido</label>
+      <input type="text" name="turno_preferencia" class="form-control">
+    </div>
+    <div class="col-md-6">
+      <label class="form-label">¿Está cursando o cursó FinEs Secundario?</label>
+      <input type="text" name="cursando_fines" class="form-control">
+    </div>
+    <div class="col-md-6">
+      <label class="form-label">Ubicación de la última institución educativa</label>
+      <input type="text" name="ubicacion_ultima_escuela" class="form-control">
+    </div>
+    <div class="col-md-6">
+      <label class="form-label">Nombre de la última institución educativa</label>
+      <input type="text" name="nombre_ultima_escuela" class="form-control">
+    </div>
+    <div class="col-md-6">
+      <label class="form-label">Provincia y Localidad de la institución</label>
+      <input type="text" name="localidad_institucion" class="form-control">
+    </div>
+    <div class="col-md-6">
+      <label class="form-label">¿Cuántas materias debe en total?</label>
+      <input type="number" name="materias_totales" class="form-control">
+    </div>
+    <div class="col-md-6">
+      <label class="form-label">¿Cuántas va a rendir en esta etapa?</label>
+      <input type="number" name="materias_a_rendir" class="form-control">
     </div>
     <div class="col-12">
-      <button type="submit" class="btn btn-success">Agregar</button>
+      <label class="form-label">Materias exactas a rendir</label>
+      <textarea name="materias_exactas" class="form-control" rows="2"></textarea>
+    </div>
+    <div class="col-12">
+      <label class="form-label">Materias preferidas (máx 4)</label>
+      <textarea name="materias_preferidas" class="form-control" rows="2"></textarea>
+    </div>
+    <div class="col-12">
+      <label class="form-label">¿Alguna observación a tener en cuenta?</label>
+      <textarea name="observaciones" class="form-control" rows="2"></textarea>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">Género</label>
+      <input type="text" name="genero" class="form-control">
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">Situación actual</label>
+      <input type="text" name="situacion_actual" class="form-control">
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">¿Cursó en la 1° etapa 2023?</label>
+      <select class="form-select" name="cursada_1etapa_2023">
+        <option value="">Seleccionar</option>
+        <option value="si">Sí</option>
+        <option value="no">No</option>
+      </select>
+    </div>
+    <div class="col-12 text-end">
+      <button type="submit" class="btn btn-primary">Enviar inscripción</button>
     </div>
   </form>
-  <ul class="list-group">
-    {% for alumno in alumnos %}
-    <li class="list-group-item">{{ alumno[0] }} - {{ alumno[1] }} - {{ alumno[2] }}</li>
-    {% endfor %}
-  </ul>
+</div>
 {% endblock %}
