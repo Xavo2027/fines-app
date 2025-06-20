@@ -1,31 +1,8 @@
-
-{% extends "base.html" %}
-{% block content %}
-<h2 class="mb-4">Historial de Pases</h2>
-
-<form method="POST" action="/realizar_pase" class="row g-3 mb-4">
-    <div class="col-md-3">
-        <input type="text" name="dni" class="form-control" placeholder="DNI" required>
-    </div>
-    <div class="col-md-3">
-        <input type="text" name="comision_origen" class="form-control" placeholder="Comisión Origen" required>
-    </div>
-    <div class="col-md-3">
-        <input type="text" name="comision_destino" class="form-control" placeholder="Comisión Destino" required>
-    </div>
-    <div class="col-md-3">
-        <input type="date" name="fecha" class="form-control" required>
-    </div>
-    <div class="col-12">
-        <button type="submit" class="btn btn-warning">Registrar Pase</button>
-    </div>
-</form>
-
-<ul class="list-group">
-    {% for pase in pases %}
-    <li class="list-group-item">
-        DNI: {{ pase[1] }} | Origen: {{ pase[2] }} → Destino: {{ pase[3] }} | Fecha: {{ pase[4] }}
-    </li>
-    {% endfor %}
-</ul>
+{% extends "base.html" %}{% block content %}
+<h3>Pases</h3><form method="POST">
+<div class="mb-3"><label>DNI del alumno</label><input type="text" name="dni" class="form-control" required></div>
+<div class="mb-3"><label>Nueva comisión</label><input type="text" name="nueva_comision" class="form-control" required></div>
+<button type="submit" class="btn btn-primary">Registrar Pase</button></form><hr>
+<h4>Listado de Pases</h4><table class="table"><thead><tr><th>DNI</th><th>Nueva Comisión</th></tr></thead>
+<tbody>{% for pase in pases %}<tr><td>{{ pase[0] }}</td><td>{{ pase[1] }}</td></tr>{% endfor %}</tbody></table>
 {% endblock %}

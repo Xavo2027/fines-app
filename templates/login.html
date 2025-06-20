@@ -1,25 +1,7 @@
-
-{% extends "base.html" %}
-{% block content %}
-<div class="container mt-5" style="max-width: 400px;">
-  <h2 class="text-center mb-4">Iniciar sesión</h2>
-  {% if error %}
-    <div class="alert alert-danger" role="alert">
-      {{ error }}
-    </div>
-  {% endif %}
-  <form method="POST">
-    <div class="mb-3">
-      <label for="dni" class="form-label">DNI</label>
-      <input type="text" class="form-control" id="dni" name="dni" required>
-    </div>
-    <div class="mb-3">
-      <label for="password" class="form-label">Contraseña</label>
-      <input type="password" class="form-control" id="password" name="password" required>
-    </div>
-    <div class="d-grid">
-      <button type="submit" class="btn btn-primary">Ingresar</button>
-    </div>
-  </form>
-</div>
-{% endblock %}
+{% extends "base.html" %}{% block content %}
+<h3>Iniciar sesión</h3>{% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
+<form method="POST"><div class="mb-3"><label>DNI</label>
+<input type="text" name="dni" class="form-control" required></div>
+<div class="mb-3"><label>Contraseña</label>
+<input type="password" name="password" class="form-control" required></div>
+<button type="submit" class="btn btn-primary">Ingresar</button></form>{% endblock %}

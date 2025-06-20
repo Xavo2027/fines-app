@@ -1,27 +1,4 @@
-{% extends "base.html" %}
-{% block content %}
-<h2 class="mb-4">Vista previa de Alumnos por Comisión</h2>
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-<table id="tablaAlumnos" class="display">
-    <thead>
-        <tr><th>DNI</th><th>Nombre</th><th>Comisión</th></tr>
-    </thead>
-    <tbody>
-    {% for alumno in alumnos %}
-        <tr><td>{{ alumno[0] }}</td><td>{{ alumno[1] }}</td><td>{{ alumno[2] }}</td></tr>
-    {% endfor %}
-    </tbody>
-</table>
-
-<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script>
-$(document).ready(function() {
-    $('#tablaAlumnos').DataTable({
-        language: {
-            url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
-        }
-    });
-});
-</script>
-{% endblock %}
+{% extends "base.html" %}{% block content %}
+<h3>Vista Excel de Alumnos</h3><table class="table table-bordered"><thead><tr>
+{% for key in alumnos[0].keys() %}<th>{{ key }}</th>{% endfor %}</tr></thead>
+<tbody>{% for a in alumnos %}<tr>{% for value in a.values() %}<td>{{ value }}</td>{% endfor %}</tr>{% endfor %}</tbody></table>{% endblock %}

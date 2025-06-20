@@ -1,28 +1,9 @@
-
-{% extends 'base.html' %}
-{% block content %}
-  <h3 class="mb-4">Crear nuevo usuario</h3>
-  <form method="POST" class="card p-4 shadow-sm" style="max-width: 500px;">
-    <div class="mb-3">
-      <label>Nombre</label>
-      <input type="text" name="nombre" class="form-control" required>
-    </div>
-    <div class="mb-3">
-      <label>Usuario</label>
-      <input type="text" name="username" class="form-control" required>
-    </div>
-    <div class="mb-3">
-      <label>Contraseña</label>
-      <input type="password" name="password" class="form-control" required>
-    </div>
-    <div class="mb-3">
-      <label>Rol</label>
-      <select name="rol" class="form-select" required>
-        <option value="coordinador">Coordinador</option>
-        <option value="analista">Analista</option>
-        <option value="ceo">CEO</option>
-      </select>
-    </div>
-    <button type="submit" class="btn btn-primary">Crear usuario</button>
-  </form>
-{% endblock %}
+{% extends "base.html" %}{% block content %}
+<h3>Registrar nuevo usuario</h3><form method="POST">
+<div class="mb-3"><label>DNI</label><input type="text" name="dni" class="form-control" required></div>
+<div class="mb-3"><label>Contraseña</label><input type="password" name="password" class="form-control" required></div>
+<div class="mb-3"><label>Rol</label><select name="rol" class="form-select" required>
+<option value="coordinador">Coordinador</option>
+<option value="analista">Analista</option>
+<option value="ceo">CEO</option></select></div>
+<button type="submit" class="btn btn-success">Crear usuario</button></form>{% endblock %}
