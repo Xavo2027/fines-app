@@ -99,7 +99,7 @@ def alumnos():
 @app.route('/agregar_alumno', methods=['POST'])
 @requiere_rol('coordinador', 'analista', 'ceo')
 def agregar_alumno():
-    dni = request.form['dni']
+    usuario = request.form.get("usuario")
     nombre = request.form['nombre']
     comision = request.form['comision']
     conn = get_db_connection()
@@ -132,7 +132,7 @@ def pases():
 @app.route('/realizar_pase', methods=['POST'])
 @requiere_rol('analista', 'ceo')
 def realizar_pase():
-    dni = request.form['dni']
+    usuario = request.form.get("usuario")
     comision_origen = request.form['comision_origen']
     comision_destino = request.form['comision_destino']
     fecha = request.form['fecha']
@@ -183,7 +183,7 @@ def nuevo_usuario():
     if request.method == 'POST':
         nombre = request.form['nombre']
         username = request.form['username']
-        password = request.form['password']
+        password = request.form.get("password")
         rol = request.form['rol']
         conn = get_db_connection()
         cur = conn.cursor()
