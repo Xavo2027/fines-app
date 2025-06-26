@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: fines-app
+    env: docker
+    repo: https://github.com/Xavo2027/fines-app
+    plan: free
+    region: oregon
+    branch: main
+    rootDir: .
+    dockerContext: .
+    dockerfilePath: Dockerfile
