@@ -1,0 +1,3 @@
+{% extends "base.html" %}{% block content %}
+<h3>Comisiones</h3><ul class="list-group">{% for com in comisiones %}
+<li class="list-group-item">{{ com[0] }}</li>{% endfor %}</ul>{% endblock %}

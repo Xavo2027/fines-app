@@ -1,0 +1,55 @@
+
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Formulario de inscripción</h2>
+    <form method="POST">
+        <div class="row">
+            <div class="col"><input class="form-control" name="email" placeholder="Email"></div>
+            <div class="col"><input class="form-control" name="dni" placeholder="DNI"></div>
+        </div>
+        <div class="row mt-2">
+            <div class="col"><input class="form-control" name="apellido" placeholder="Apellido"></div>
+            <div class="col"><input class="form-control" name="nombre" placeholder="Nombre"></div>
+        </div>
+        <div class="row mt-2">
+            <div class="col"><input class="form-control" name="celular" placeholder="Celular"></div>
+            <div class="col"><input class="form-control" name="celular_alt" placeholder="Celular alternativo"></div>
+        </div>
+        <div class="row mt-2">
+            <div class="col"><input class="form-control" name="fecha_nac" placeholder="Fecha de nacimiento"></div>
+            <div class="col"><input class="form-control" name="cursado_anterior" placeholder="Cursado anterior"></div>
+        </div>
+        <div class="row mt-2">
+            <div class="col"><input class="form-control" name="turno" placeholder="Turno preferido"></div>
+            <div class="col"><input class="form-control" name="cursa_actualmente" placeholder="Cursa actualmente"></div>
+        </div>
+        <div class="row mt-2">
+            <div class="col"><input class="form-control" name="institucion" placeholder="Institución actual"></div>
+            <div class="col"><input class="form-control" name="nombre_institucion" placeholder="Nombre institución"></div>
+        </div>
+        <div class="row mt-2">
+            <div class="col"><input class="form-control" name="localidad_provincia" placeholder="Localidad y provincia"></div>
+            <div class="col"><input class="form-control" name="materias_totales" placeholder="Materias totales"></div>
+        </div>
+        <div class="row mt-2">
+            <div class="col"><input class="form-control" name="materias_a_rendir" placeholder="Materias a rendir"></div>
+            <div class="col"><input class="form-control" name="materias" placeholder="Materias exactas"></div>
+        </div>
+        <div class="row mt-2">
+            <div class="col"><input class="form-control" name="preferencia" placeholder="Materias preferencia"></div>
+            <div class="col"><input class="form-control" name="observaciones" placeholder="Observaciones"></div>
+        </div>
+        <div class="row mt-2">
+            <div class="col"><input class="form-control" name="genero" placeholder="Género"></div>
+            <div class="col"><input class="form-control" name="estado_fines" placeholder="Estado Fines"></div>
+        </div>
+        <div class="row mt-2">
+            <div class="col"><input class="form-control" name="etapa_2023" placeholder="Etapa 2023"></div>
+        </div>
+        <div class="row mt-4">
+            <div class="col"><button class="btn btn-success w-100">Guardar</button></div>
+        </div>
+    </form>
+</div>
+{% endblock %}

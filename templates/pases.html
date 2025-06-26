@@ -1,0 +1,8 @@
+{% extends "base.html" %}{% block content %}
+<h3>Pases</h3><form method="POST">
+<div class="mb-3"><label>DNI del alumno</label><input type="text" name="dni" class="form-control" required></div>
+<div class="mb-3"><label>Nueva comisión</label><input type="text" name="nueva_comision" class="form-control" required></div>
+<button type="submit" class="btn btn-primary">Registrar Pase</button></form><hr>
+<h4>Listado de Pases</h4><table class="table"><thead><tr><th>DNI</th><th>Nueva Comisión</th></tr></thead>
+<tbody>{% for pase in pases %}<tr><td>{{ pase[0] }}</td><td>{{ pase[1] }}</td></tr>{% endfor %}</tbody></table>
+{% endblock %}
