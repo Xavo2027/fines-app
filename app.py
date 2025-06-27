@@ -1,63 +1,47 @@
 
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 import psycopg2
-import psycopg2.extras
-import hashlib
+import bcrypt
+from db_connect import get_connection
 
 app = Flask(__name__)
-app.secret_key = "clave_secreta"  # Cambiar por una clave segura
+app.secret_key = 'clave_secreta'
 
-def get_connection():
-    return psycopg2.connect(
-        host="dpg-d1blfm0dl3ps73eqif70-a",
-        database="finesdb_sng6",
-        user="finesdb_sng6_user",
-        password="IxPys2jK7nwhNxl2dlsch49EILGOHwSO"
-    )
-
-def verificar_usuario(usuario, contrasena):
-    conn = get_connection()
-    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    cur.execute("SELECT * FROM usuarios WHERE usuario = %s", (usuario,))
-    user = cur.fetchone()
-    cur.close()
-    conn.close()
-
-    if user:
-        hash_contrasena = hashlib.sha256(contrasena.encode()).hexdigest()
-        return hash_contrasena == user["contrasena_hash"], user["rol"]
-    return False, None
-
-@app.route("/")
+@app.route('/')
 def index():
-    if "usuario" in session:
-        return f"Bienvenido, {session['usuario']}! Rol: {session['rol']}"
-    return redirect(url_for("login"))
+    if 'usuario_id' not in session:
+        return redirect(url_for('login'))
+    return render_template('index.html')
 
-@app.route("/login", methods=["GET", "POST"])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    error = None
-    if request.method == "POST":
-        usuario = request.form.get("usuario", "")
-        password = request.form.get("password", "")
+    if request.method == 'POST':
+        usuario = request.form['usuario']
+        contrasena = request.form['contrasena']
 
-        if not usuario or not password:
-            error = "Por favor, completá todos los campos."
-        else:
-            valido, rol = verificar_usuario(usuario, password)
-            if valido:
-                session["usuario"] = usuario
-                session["rol"] = rol
-                return redirect(url_for("index"))
-            else:
-                error = "Usuario o contraseña incorrectos."
+        conn = get_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT id, contrasena_hash, rol FROM usuarios WHERE usuario = %s", (usuario,))
+        result = cur.fetchone()
+        cur.close()
+        conn.close()
 
-    return render_template("login.html", error=error)
+        if result:
+            user_id, contrasena_hash, rol = result
+            if bcrypt.checkpw(contrasena.encode('utf-8'), contrasena_hash.encode('utf-8')):
+                session['usuario_id'] = user_id
+                session['usuario'] = usuario
+                session['rol'] = rol
+                return redirect(url_for('index'))
 
-@app.route("/logout")
+        flash('Usuario o contraseña incorrectos.', 'danger')
+
+    return render_template('login.html')
+
+@app.route('/logout')
 def logout():
     session.clear()
-    return redirect(url_for("login"))
+    return redirect(url_for('login'))
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     app.run(debug=True)
