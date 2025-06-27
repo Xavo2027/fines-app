@@ -1,24 +1,25 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}App Fines{% endblock %}</title>
+    <title>Gestión de Alumnos Fines</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <header>
-        <h1>Gestión de Alumnos Fines</h1>
-        <nav>
-            <a href="/">Inicio</a> |
-            <a href="/login">Login</a> |
-            <a href="/usuarios">Usuarios</a>
-        </nav>
-    </header>
-    <main>
+    <div class="navbar">
+        <strong>Gestión de Alumnos Fines</strong> |
+        <a href="{{ url_for('index') }}">Inicio</a> |
+        {% if session.get("usuario") %}
+            <a href="{{ url_for('logout') }}">Cerrar sesión</a>
+        {% else %}
+            <a href="{{ url_for('login') }}">Login</a>
+        {% endif %}
+    </div>
+    <div class="content">
         {% block content %}{% endblock %}
-    </main>
+    </div>
     <footer>
-        <p>&copy; 2025 App Fines</p>
+        <p>© 2025 App Fines</p>
     </footer>
 </body>
 </html>

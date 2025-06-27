@@ -1,16 +1,12 @@
-
 {% extends "base.html" %}
+
 {% block content %}
-<div class="container mt-5">
-    <h1>Bienvenido, {{ usuario }}</h1>
-    {% if rol == 'coordinador' %}
-    <p>Tenés acceso completo como Coordinador.</p>
-    {% elif rol == 'ceo' %}
-    <p>Tenés acceso como CEO.</p>
-    {% elif rol == 'analista' %}
-    <p>Tenés acceso como Analista.</p>
-    {% else %}
+<h2>Bienvenido,</h2>
+{% if rol == "admin" %}
+    <p>Tenés acceso de administrador</p>
+{% elif rol == "docente" %}
+    <p>Tenés acceso docente</p>
+{% else %}
     <p>Rol desconocido.</p>
-    {% endif %}
-</div>
+{% endif %}
 {% endblock %}
