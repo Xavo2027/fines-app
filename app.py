@@ -1,83 +1,63 @@
-from flask import Flask, render_template, request, redirect, session, url_for
+
+from flask import Flask, render_template, request, redirect, url_for, session
 import psycopg2
+import psycopg2.extras
+import hashlib
 
 app = Flask(__name__)
-app.secret_key = 'supersecreto123'  # podés cambiarlo por seguridad
+app.secret_key = "clave_secreta"  # Cambiar por una clave segura
 
-# Conexión a base de datos (Render)
-def get_db_connection():
+def get_connection():
     return psycopg2.connect(
         host="dpg-d1blfm0dl3ps73eqif70-a",
-        port="5432",
         database="finesdb_sng6",
         user="finesdb_sng6_user",
-        password="IxPys2jK7nwhNx12d1sch49EILGOHwS0"
+        password="IxPys2jK7nwhNxl2dlsch49EILGOHwSO"
     )
 
-# Crear tablas si no existen
-@app.before_request
-def create_tables():
-    try:
-        conn = get_db_connection()
-        cur = conn.cursor()
-        cur.execute('''
-            CREATE TABLE IF NOT EXISTS usuarios (
-                id SERIAL PRIMARY KEY,
-                nombre TEXT NOT NULL,
-                email TEXT UNIQUE NOT NULL,
-                contraseña TEXT NOT NULL,
-                rol TEXT NOT NULL
-            );
-        ''')
-        conn.commit()
-        cur.close()
-        conn.close()
-    except Exception as e:
-        print("Error creando tablas:", e)
+def verificar_usuario(usuario, contrasena):
+    conn = get_connection()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    cur.execute("SELECT * FROM usuarios WHERE usuario = %s", (usuario,))
+    user = cur.fetchone()
+    cur.close()
+    conn.close()
 
-# Página principal
-@app.route('/')
+    if user:
+        hash_contrasena = hashlib.sha256(contrasena.encode()).hexdigest()
+        return hash_contrasena == user["contrasena_hash"], user["rol"]
+    return False, None
+
+@app.route("/")
 def index():
-    usuario = session.get('usuario')
-    rol = session.get('rol')
-    return render_template('index.html', usuario=usuario, rol=rol)
+    if "usuario" in session:
+        return f"Bienvenido, {session['usuario']}! Rol: {session['rol']}"
+    return redirect(url_for("login"))
 
-# Login
-@app.route('/login', methods=['GET', 'POST'])
+@app.route("/login", methods=["GET", "POST"])
 def login():
     error = None
-    if request.method == 'POST':
-        email = request.form['email']
-        contraseña = request.form['contraseña']
-        conn = get_db_connection()
-        cur = conn.cursor()
-        cur.execute("SELECT nombre, rol FROM usuarios WHERE email = %s AND contraseña = %s", (email, contraseña))
-        user = cur.fetchone()
-        conn.close()
-        if user:
-            session['usuario'] = user[0]
-            session['rol'] = user[1]
-            return redirect(url_for('index'))
+    if request.method == "POST":
+        usuario = request.form.get("usuario", "")
+        password = request.form.get("password", "")
+
+        if not usuario or not password:
+            error = "Por favor, completá todos los campos."
         else:
-            error = 'Email o contraseña incorrectos.'
-    return render_template('login.html', error=error)
+            valido, rol = verificar_usuario(usuario, password)
+            if valido:
+                session["usuario"] = usuario
+                session["rol"] = rol
+                return redirect(url_for("index"))
+            else:
+                error = "Usuario o contraseña incorrectos."
 
-# Usuarios (solo muestra lista por ahora)
-@app.route('/usuarios')
-def usuarios():
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute("SELECT id, nombre, email, rol FROM usuarios")
-    usuarios = cur.fetchall()
-    conn.close()
-    return render_template('usuarios.html', usuarios=usuarios)
+    return render_template("login.html", error=error)
 
-# Logout
-@app.route('/logout')
+@app.route("/logout")
 def logout():
     session.clear()
-    return redirect(url_for('index'))
+    return redirect(url_for("login"))
 
-# Run localmente
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True)
