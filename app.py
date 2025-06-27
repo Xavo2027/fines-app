@@ -1,82 +1,83 @@
-from flask import Flask, render_template, redirect, url_for, request, session
+from flask import Flask, render_template, request, redirect, session, url_for
 import psycopg2
-import os
 
 app = Flask(__name__)
-app.secret_key = os.urandom(24)
+app.secret_key = 'supersecreto123'  # podés cambiarlo por seguridad
 
-# Conexión a la base de datos
+# Conexión a base de datos (Render)
 def get_db_connection():
     return psycopg2.connect(
-        host="dpg-...",  # reemplazá esto con tu host
-        database="fines",
-        user="...",
-        password="..."
+        host="dpg-d1blfm0dl3ps73eqif70-a",
+        port="5432",
+        database="finesdb_sng6",
+        user="finesdb_sng6_user",
+        password="IxPys2jK7nwhNx12d1sch49EILGOHwS0"
     )
 
-# Inicialización de la base de datos (solo una vez)
+# Crear tablas si no existen
 @app.before_request
 def create_tables():
-    if not hasattr(app, 'db_initialized'):
-        with app.app_context():
-            conn = get_db_connection()
-            cur = conn.cursor()
-            cur.execute("""
-                CREATE TABLE IF NOT EXISTS usuarios (
-                    id SERIAL PRIMARY KEY,
-                    nombre TEXT NOT NULL,
-                    email TEXT UNIQUE NOT NULL,
-                    password TEXT NOT NULL,
-                    rol TEXT NOT NULL
-                );
-            """)
-            conn.commit()
-            cur.close()
-            conn.close()
-            app.db_initialized = True
-
-# Rutas
-@app.route('/')
-def index():
-    rol = session.get('rol', 'desconocido')
-    return render_template('index.html', rol=rol)
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
-
+    try:
         conn = get_db_connection()
         cur = conn.cursor()
-        cur.execute("SELECT * FROM usuarios WHERE email = %s AND password = %s", (email, password))
-        usuario = cur.fetchone()
+        cur.execute('''
+            CREATE TABLE IF NOT EXISTS usuarios (
+                id SERIAL PRIMARY KEY,
+                nombre TEXT NOT NULL,
+                email TEXT UNIQUE NOT NULL,
+                contraseña TEXT NOT NULL,
+                rol TEXT NOT NULL
+            );
+        ''')
+        conn.commit()
         cur.close()
         conn.close()
+    except Exception as e:
+        print("Error creando tablas:", e)
 
-        if usuario:
-            session['usuario_id'] = usuario[0]
-            session['nombre'] = usuario[1]
-            session['rol'] = usuario[4]
+# Página principal
+@app.route('/')
+def index():
+    usuario = session.get('usuario')
+    rol = session.get('rol')
+    return render_template('index.html', usuario=usuario, rol=rol)
+
+# Login
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    error = None
+    if request.method == 'POST':
+        email = request.form['email']
+        contraseña = request.form['contraseña']
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT nombre, rol FROM usuarios WHERE email = %s AND contraseña = %s", (email, contraseña))
+        user = cur.fetchone()
+        conn.close()
+        if user:
+            session['usuario'] = user[0]
+            session['rol'] = user[1]
             return redirect(url_for('index'))
         else:
-            return render_template('login.html', error='Credenciales incorrectas')
-    return render_template('login.html')
+            error = 'Email o contraseña incorrectos.'
+    return render_template('login.html', error=error)
 
+# Usuarios (solo muestra lista por ahora)
+@app.route('/usuarios')
+def usuarios():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT id, nombre, email, rol FROM usuarios")
+    usuarios = cur.fetchall()
+    conn.close()
+    return render_template('usuarios.html', usuarios=usuarios)
+
+# Logout
 @app.route('/logout')
 def logout():
     session.clear()
     return redirect(url_for('index'))
 
-@app.route('/usuarios')
-def usuarios():
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM usuarios")
-    usuarios = cur.fetchall()
-    cur.close()
-    conn.close()
-    return render_template('usuarios.html', usuarios=usuarios)
-
+# Run localmente
 if __name__ == '__main__':
     app.run(debug=True)
